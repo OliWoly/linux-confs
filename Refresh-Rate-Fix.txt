@@ -1,0 +1,43 @@
+On Linux my games were very visibly locked to 60fps even if it said it was higher and vsync was off.
+This is becuase my second monitor is 60Hz, my main is 165Hz.
+
+Tutorial changed to fit my needs taken from: https://www.reddit.com/r/linuxhardware/comments/mht7kn/workaround_for_multiple_monitors_with_different/
+
+Make sure latest nvidia drivers are installed.
+Go into nvidia-settings
+	X-Server display Config
+	-> Advanced
+		-> Force Full Composite Pipeline
+		(Do on both monitors)
+	
+	OpenGL settings
+	-> Sync to VBlank = OFF
+	-> Allow Flipping = OFF
+
+Saving config can be quite troublsome. Might have to copy the config manually instead of letting
+nvidia-settings do it. Its the directory it tries to save to.
+
+Have to make sure to run nvidia-settings on every startup to load config:
+-----
+#!/bin/sh
+/usr/bin/nvidia-settings --load-config-only
+-----
+
+
+
+
+Put this into: 
+/etc/environment
+-----
+CLUTTER_DEFAULT_FPS=<highest_refresh_rate>
+__GL_SYNC_DISPLAY_DEVICE=<display_with_highest_refresh_rate>
+__GL_SYNC_TO_VBLANK=0
+-----
+Display name can be seen in nvidia-settings. Itll probably be dp-0.
+
+
+
+On every steam game these are the launch options to use:
+-----
+__GL_`SYNC_DISPLAY_DEVICE=DP-0, __GL_VRR_ALLOWED=1
+-----
